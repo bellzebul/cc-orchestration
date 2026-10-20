@@ -1,0 +1,6 @@
+node_modules/
+mac/tracker/state/
+mac/tracker/token
+mac/tracker/ntfy-topic
+*.log
+.DS_Store

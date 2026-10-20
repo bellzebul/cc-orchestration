@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+# pre-push: protected branches (@@PROTECTED_SLASH@@) move only through a merged PR. git hands this hook the RESOLVED refs
+# (<local ref> <local sha> <remote ref> <remote sha>, one line per ref), so no spelling of the push
+# command (HEAD, @, push.default, -c values, quoting, interpreters) can get around it.
+# Installed by scripts/install-git-hooks.sh into <git-common-dir>/protected-hooks (worker.sh runs it per worktree).
+# Humans: `GIT_PUSH_TO_PROTECTED=1 git push …` is the explicit override; agents never set it (bash guard).
+set -u
+remote=${1:-}; url=${2:-}
+blocked=0
+refs=$(cat)   # buffered: a chained pre-push hook (see below) needs the same lines
+while read -r local_ref local_sha remote_ref remote_sha; do
+  [ -n "${remote_ref:-}" ] || continue
+  case "$remote_ref" in
+    @@PROTECTED_REFS_CASE@@)
+      if [ "${GIT_PUSH_TO_PROTECTED:-}" = 1 ]; then
+        echo "pre-push: pushing $remote_ref with GIT_PUSH_TO_PROTECTED=1 (human override)" >&2
+      else
+        echo "pre-push: refusing to push $local_ref -> $remote_ref on $remote ($url). Protected branches (@@PROTECTED_SLASH@@) move only via a merged PR (gh pr merge). Humans may override with GIT_PUSH_TO_PROTECTED=1." >&2
+        blocked=1
+      fi ;;
+  esac
+done <<EOF
+$refs
+EOF
+[ "$blocked" = 0 ] || exit 1
+# The repo's own hooks (husky, pre-commit, a previous core.hooksPath) keep running: install-git-hooks.sh
+# records their directory in previous-hooks-path next to this file; it runs AFTER the protected check.
+prev_file="$(dirname "$0")/previous-hooks-path"
+if [ -f "$prev_file" ]; then
+  prev=$(head -1 "$prev_file")
+  if [ -n "$prev" ] && [ -x "$prev/pre-push" ] && [ "$prev/pre-push" != "$0" ]; then
+    printf '%s\n' "$refs" | "$prev/pre-push" "$@"; exit $?
+  fi
+fi
+exit 0

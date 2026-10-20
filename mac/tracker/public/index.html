@@ -1,0 +1,559 @@
+<!doctype html>
+<html lang="uk" data-tone="neutral">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Агенти">
+<meta name="theme-color" content="#181715">
+<meta name="color-scheme" content="dark light">
+<title>Агенти</title>
+<link rel="apple-touch-icon" href="/icon-180.png">
+<link id="fav" rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23121110'/%3E%3Crect x='8' y='8' width='16' height='16' fill='%23A09B91'/%3E%3C/svg%3E">
+<style>
+:root{
+  --font:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",system-ui,sans-serif;
+  --mono:ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,monospace;
+  --bg:#121110;--s1:#181715;--s2:#1F1E1B;--s3:#282623;--well:#181715;
+  --line-subtle:#23211E;--line:#33312D;--line-strong:#46433E;--off-bg:#33312D;
+  --t1:#F2EFE9;--t2:#B5B0A6;--t3:#A09B91;
+  --press:rgba(242,239,233,.09);
+  --brand:#F2EFE9;--brand-text:#121110;
+  --scrim:rgba(8,7,6,.7);
+  --on-solid:#0C0B0A;
+  --w:#FF7C70;--w-solid:#F2564A;--w-pulse:#FF9288;--w-tint:#251614;--w-line:rgba(242,86,74,.42);--w-page:#1A1311;
+  --i:#EBB751;--i-solid:#EBB751;--i-tint:#252014;--i-line:rgba(235,183,81,.4);--i-page:#18160F;
+  --k:#7ED6A5;--k-tint:#14221B;--k-line:rgba(126,214,165,.38);
+  --b:#8CBDF7;--b-tint:#131B26;--b-line:rgba(140,189,247,.38);
+  --d:#A09B91;
+}
+@media (prefers-color-scheme:light){
+  :root{
+    --bg:#F3F1EC;--s1:#FBFAF8;--s2:#FFFFFF;--s3:#FFFFFF;--well:#F3F1EC;
+    --line-subtle:#E4E0D8;--line:#D9D4CB;--line-strong:#B5B0A6;--off-bg:#D9D4CB;
+    --t1:#121110;--t2:#46433E;--t3:#5F5B54;
+    --press:rgba(18,17,16,.07);
+    --brand:#121110;--brand-text:#F2EFE9;
+    --scrim:rgba(18,17,16,.4);
+    --w:#B3261E;--w-tint:#FBEAE7;--w-line:rgba(201,58,47,.45);--w-page:#F7EBE8;
+    --i:#875A00;--i-tint:#FAF1DC;--i-line:rgba(160,110,0,.42);--i-page:#F6EFDF;
+    --k:#1E7048;--k-tint:#E2F2E8;--k-line:rgba(30,112,72,.35);
+    --b:#1F5FA8;--b-tint:#E4EDF8;--b-line:rgba(31,95,168,.35);
+    --d:#5F5B54;
+  }
+}
+html{--page:var(--bg);--band-bg:var(--s1);--band-fg:var(--t1);--band-fg2:var(--t2);--band-line:var(--line);--band-ctl:var(--line-strong)}
+html[data-tone=waiting]{--page:var(--w-page);--band-bg:var(--w-solid);--band-fg:var(--on-solid);--band-fg2:var(--on-solid);--band-line:var(--w-solid);--band-ctl:rgba(12,11,10,.42)}
+html[data-tone=idle]{--page:var(--i-page);--band-bg:var(--i-solid);--band-fg:var(--on-solid);--band-fg2:var(--on-solid);--band-line:var(--i-solid);--band-ctl:rgba(12,11,10,.42)}
+html[data-tone=working]{--band-bg:var(--k-tint);--band-fg:var(--k);--band-fg2:var(--t2);--band-line:var(--k-line);--band-ctl:var(--k-line)}
+html[data-tone=offline]{--band-bg:var(--off-bg);--band-fg:var(--t1);--band-fg2:var(--t2);--band-line:var(--line-strong)}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{background:var(--page);-webkit-text-size-adjust:100%}
+body{margin:0;min-height:100vh;min-height:100dvh;background:var(--page);color:var(--t1);font:15px/1.4 var(--font);-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent}
+body.lock{overflow:hidden}
+a{color:var(--t1);text-underline-offset:3px}
+a:hover{color:var(--t2)}
+button{font:inherit;color:inherit;background:none;border:0;border-radius:0;padding:0;margin:0;cursor:pointer;-webkit-appearance:none;appearance:none}
+:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+.wrap{max-width:640px;margin:0 auto}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.cap{font:500 11px/1.3 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--t3)}
+.ico{display:block;flex:none;width:16px;height:16px}
+.nil{color:var(--t3)}
+
+.sbar{position:fixed;top:0;left:0;right:0;height:env(safe-area-inset-top);background:var(--band-bg);z-index:30}
+.band{background:var(--band-bg);color:var(--band-fg);border-bottom:1px solid var(--band-line);padding:calc(env(safe-area-inset-top) + 4px) calc(env(safe-area-inset-right) + 16px) 22px calc(env(safe-area-inset-left) + 16px)}
+.bar{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:44px}
+.bar-l{display:flex;align-items:center;gap:10px;min-width:0}
+.upd{font:500 12px/1 var(--mono);font-variant-numeric:tabular-nums;color:var(--band-fg2);white-space:nowrap}
+.dmark{font:600 10.5px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;padding:4px 6px;border:1px solid var(--band-ctl);color:var(--band-fg)}
+.wake{display:flex;align-items:center;gap:8px;min-height:44px;padding:0 0 0 12px;font:500 13px/1 var(--font);color:var(--band-fg);white-space:nowrap}
+.wbox{position:relative;width:14px;height:14px;border:1.5px solid currentColor}
+.wake.on .wbox::after{content:"";position:absolute;inset:2px;background:currentColor}
+.hl{display:flex;align-items:center;gap:12px;margin-top:14px;font-size:34px;line-height:1.08;font-weight:700;letter-spacing:-.022em;text-wrap:balance}
+.hl .ico{width:28px;height:28px}
+.counts{display:flex;flex-wrap:wrap;gap:6px 20px;margin-top:12px;font:500 16px/1.3 var(--mono);font-variant-numeric:tabular-nums;color:var(--band-fg2)}
+.counts:empty{display:none}
+.counts span{display:inline-flex;align-items:center;gap:7px}
+.counts .ico{width:12px;height:12px}
+.sub{margin-top:10px;font:500 15px/1.35 var(--mono);font-variant-numeric:tabular-nums;color:var(--band-fg2)}
+.sub:empty{display:none}
+
+main{padding:0 calc(env(safe-area-inset-right) + 16px) calc(env(safe-area-inset-bottom) + 32px) calc(env(safe-area-inset-left) + 16px)}
+.notice{display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding-top:18px}
+.notice .mono{font-size:12px;color:var(--t3)}
+.list{list-style:none;margin:0;padding:16px 0 0;display:flex;flex-direction:column;gap:8px}
+.list li.grp{margin-top:10px}
+.card{position:relative;display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"st st" "nm tm" "br br" "hd hd";column-gap:14px;width:100%;padding:14px 16px 16px;text-align:left;background:var(--s1);border:1px solid var(--line-subtle)}
+.card::after{content:"";position:absolute;inset:-1px;pointer-events:none}
+.card:active::after{background:var(--press)}
+.card[data-state=waiting]{background:var(--w-tint);border-color:var(--w-line)}
+.card[data-state=idle]{background:var(--i-tint);border-color:var(--i-line)}
+.card[data-state=external]{background:var(--b-tint);border-color:var(--b-line)}
+.card[data-state=dead]{background:transparent;border-style:dashed;border-color:var(--line)}
+.card .st{grid-area:st;display:flex;margin-bottom:10px}
+.nm{grid-area:nm;min-width:0;font-size:21px;line-height:1.2;font-weight:650;letter-spacing:-.015em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.card[data-state=dead] .nm{color:var(--t3);font-weight:600}
+.card .tm{grid-area:tm;align-self:center}
+.br{grid-area:br;min-width:0;margin-top:3px;font:400 12.5px/1.35 var(--mono);color:var(--t3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hd{grid-area:hd;min-width:0;margin-top:9px;font-size:15px;line-height:1.35;color:var(--t2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+.chip{display:inline-flex;align-items:center;gap:6px;min-height:24px;padding:0 8px;font:600 11px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;white-space:nowrap}
+.chip .ico{width:12px;height:12px}
+.chip[data-state=waiting]{background:var(--w-solid);color:var(--on-solid)}
+.chip[data-state=idle]{background:var(--i-solid);color:var(--on-solid)}
+.chip[data-state=working]{color:var(--k);padding:0}
+.chip[data-state=dead]{color:var(--d);padding:0}
+.chip[data-state=external]{color:var(--b);padding:0}
+
+.tm{font:500 16px/1 var(--mono);font-variant-numeric:tabular-nums;color:var(--t2);white-space:nowrap}
+.tm[data-state=working],.tm[data-state=external],.tm[data-state=dead]{color:var(--t3);font-size:15px}
+.tm.l1,.tm.l2{font-size:18px;font-weight:700}
+.tm.l1[data-state=waiting]{color:var(--w)}
+.tm.l1[data-state=idle]{color:var(--i)}
+.tm.l2{padding:5px 8px;color:var(--on-solid)}
+.tm.l2[data-state=waiting]{background:var(--w-solid)}
+.tm.l2[data-state=idle]{background:var(--i-solid)}
+
+.empty{margin-top:16px;padding:40px 24px;border:1px dashed var(--line);text-align:center}
+.empty p{margin:10px auto 0;max-width:30ch;color:var(--t2);text-wrap:pretty}
+.demo{margin-top:32px;padding-top:16px;border-top:1px solid var(--line)}
+.demo-note{margin:8px 0 0;font-size:14px;color:var(--t2);text-wrap:pretty}
+.tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.tag{min-height:36px;padding:0 12px;font:500 12px/1 var(--mono);color:var(--t2);border:1px solid var(--line)}
+.tag.on{background:var(--brand);border-color:var(--brand);color:var(--brand-text)}
+
+.scrim{position:fixed;inset:0;z-index:40;background:var(--scrim);opacity:0;visibility:hidden;transition:opacity .2s ease,visibility 0s linear .2s}
+.scrim.on{opacity:1;visibility:visible;transition:opacity .2s ease}
+.sheet{position:fixed;left:0;right:0;bottom:0;z-index:41;margin:0 auto;max-width:640px;max-height:calc(100vh - 40px);max-height:calc(100dvh - env(safe-area-inset-top) - 24px);display:flex;flex-direction:column;background:var(--s3);border-top:1px solid var(--line-strong);transform:translateY(100%);visibility:hidden;transition:transform .28s cubic-bezier(.2,0,0,1),visibility 0s linear .28s}
+.sheet.on{transform:none;visibility:visible;transition:transform .28s cubic-bezier(.2,0,0,1)}
+.grip{position:relative;flex:none;display:flex;justify-content:flex-end;padding:4px calc(env(safe-area-inset-right) + 4px) 0 16px;touch-action:none}
+.grab{position:absolute;left:50%;top:8px;width:36px;height:4px;margin-left:-18px;background:var(--line-strong)}
+.x{display:grid;place-items:center;width:44px;height:44px;color:var(--t2)}
+.x .ico{width:18px;height:18px}
+.sh-body{flex:1 1 auto;min-height:0;overflow:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding:0 calc(env(safe-area-inset-right) + 16px) 28px calc(env(safe-area-inset-left) + 16px)}
+.sheet.nofoot .sh-body{padding-bottom:calc(env(safe-area-inset-bottom) + 28px)}
+.sh-top{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:32px}
+.sh-top .tm{font-size:20px}
+.sh-name{margin:14px 0 0;font-size:28px;line-height:1.15;font-weight:700;letter-spacing:-.02em;overflow-wrap:anywhere}
+.sh-br{margin-top:4px;font:13px/1.4 var(--mono);color:var(--t3);overflow-wrap:anywhere}
+.sh-hd{margin:14px 0 0;font-size:17px;line-height:1.45;color:var(--t1);text-wrap:pretty;overflow-wrap:anywhere}
+.props{margin:20px 0 0;border-top:1px solid var(--line)}
+.prow{display:flex;align-items:baseline;justify-content:space-between;gap:16px;padding:11px 0;border-bottom:1px solid var(--line)}
+.prow dt{flex:none;font:500 12px/16px var(--mono);letter-spacing:.04em;text-transform:uppercase;color:var(--t3)}
+.prow dd{margin:0;min-width:0;font:13.5px/1.4 var(--mono);font-variant-numeric:tabular-nums;text-align:right;overflow-wrap:anywhere}
+.prow.stack{display:block}
+.prow.stack dd{margin-top:6px;text-align:left}
+.sec{margin-top:26px}
+.sec>.cap{margin:0 0 10px}
+.rep{display:flex;align-items:center;gap:12px;margin-bottom:8px}
+.rep .mono{font-size:12px;color:var(--t3)}
+.rchip{display:inline-flex;align-items:center;min-height:22px;padding:0 7px;font:600 10.5px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;background:var(--s2);color:var(--t2)}
+.rchip.ok{background:var(--k-tint);color:var(--k)}
+.rchip.bad{background:var(--w-tint);color:var(--w)}
+.rep-sum{margin:0;font-size:15px;line-height:1.45;text-wrap:pretty;overflow-wrap:anywhere}
+.well{max-height:240px;overflow:auto;overscroll-behavior:contain;padding:12px 14px;background:var(--well);font-size:14.5px;line-height:1.5;white-space:pre-wrap;overflow-wrap:anywhere}
+.well.short{max-height:150px}
+.sh-id{margin-top:24px;font:12px/1.4 var(--mono);color:var(--t3);overflow-wrap:anywhere}
+.sh-foot{flex:none;padding:12px calc(env(safe-area-inset-right) + 16px) calc(env(safe-area-inset-bottom) + 12px) calc(env(safe-area-inset-left) + 16px);border-top:1px solid var(--line)}
+.pr{display:flex;align-items:center;justify-content:center;gap:8px;min-height:52px;background:var(--brand);color:var(--brand-text);font-size:17px;font-weight:600;text-decoration:none}
+.pr:hover{color:var(--brand-text)}
+.pr:active{opacity:.85}
+
+@keyframes pulse{50%{background-color:var(--w-pulse)}}
+@keyframes breathe{50%{opacity:.4}}
+@media (prefers-reduced-motion:no-preference){
+  .chip[data-state=waiting]{animation:pulse 1.8s ease-in-out infinite}
+  .hl-i.pulse{animation:breathe 1.8s ease-in-out infinite}
+}
+@media (prefers-reduced-motion:reduce){
+  .sheet,.sheet.on,.scrim,.scrim.on{transition:none}
+}
+</style>
+</head>
+<body>
+<div class="sbar" aria-hidden="true"></div>
+<header class="band" id="band">
+  <div class="wrap">
+    <div class="bar">
+      <div class="bar-l">
+        <span class="upd" id="upd">ще не оновлено</span>
+        <span class="dmark" id="dmark" hidden>Демо</span>
+      </div>
+      <button class="wake" id="wake" type="button" role="switch" aria-checked="false" aria-label="Не гасити екран"><span class="wbox"></span><span>Не гасити</span></button>
+    </div>
+    <div class="hl" id="hl" aria-live="polite"></div>
+    <div class="counts" id="counts"></div>
+    <div class="sub" id="sub"></div>
+  </div>
+</header>
+<main id="main">
+  <div class="wrap">
+    <div id="notice"></div>
+    <ul class="list" id="list"></ul>
+    <div id="empty"></div>
+    <div id="demo"></div>
+  </div>
+</main>
+<div class="scrim" id="scrim"></div>
+<section class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="shName">
+  <div class="grip" id="grip"><span class="grab" aria-hidden="true"></span><button class="x" id="close" type="button" aria-label="Закрити"><svg class="ico" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 3l10 10M13 3 3 13" stroke="currentColor" stroke-width="1.6" fill="none"/></svg></button></div>
+  <div class="sh-body" id="shBody"></div>
+  <div class="sh-foot" id="shFoot" hidden></div>
+</section>
+<script>
+(function(){
+'use strict';
+var API='/api/sessions', POLL_MS=3000, OFFLINE_MS=12000, MSG_MAX=600;
+var LS_OK='agentmon.serverSeen', LS_WAKE='agentmon.wake';
+var ORDER=['waiting','idle','external','working','dead'];
+var RANK={waiting:0,idle:1,external:2,working:3,dead:4};
+var LABEL={waiting:'Чекає тебе',idle:'Без роботи',external:'Чекає команду',working:'Працює',dead:'Мертва'};
+var REPORT={done:['Готово','ok'],blocked:['Заблоковано','bad'],failed:['Помилка','bad']};
+var ESCALATE={waiting:[5,15],idle:[10,30]}; // minutes → level 1, level 2
+var FAV={waiting:'#F2564A',idle:'#EBB751',working:'#7ED6A5',offline:'#807B73',neutral:'#A09B91'};
+var SCEN={all:'Норма',idle:'Без роботи',calm:'Всі працюють',empty:'Порожньо',offline:"Немає зв'язку"};
+var ICON={
+  waiting:'<path d="M8 1.6 15.2 14.4H.8Z" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M8 6v4.3" stroke="currentColor" stroke-width="1.8"/><rect x="7.1" y="11.3" width="1.8" height="1.8" fill="currentColor"/>',
+  idle:'<rect x="3.5" y="2.5" width="3" height="11" fill="currentColor"/><rect x="9.5" y="2.5" width="3" height="11" fill="currentColor"/>',
+  working:'<path d="M4 2.2 13.4 8 4 13.8Z" fill="currentColor"/>',
+  external:'<path d="M3.5 1.8h9M3.5 14.2h9M4.6 1.8c0 3.7 6.8 3.5 6.8 6.2s-6.8 2.5-6.8 6.2M11.4 1.8c0 3.7-6.8 3.5-6.8 6.2s6.8 2.5 6.8 6.2" fill="none" stroke="currentColor" stroke-width="1.5"/>',
+  dead:'<path d="M3.2 3.2l9.6 9.6M12.8 3.2l-9.6 9.6" stroke="currentColor" stroke-width="1.8" fill="none"/>',
+  offline:'<circle cx="8" cy="8" r="6.2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M3.6 12.4l8.8-8.8" stroke="currentColor" stroke-width="1.6"/>',
+  empty:'<rect x="2.5" y="2.5" width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.6"/>'
+};
+
+var $=function(s){return document.querySelector(s)};
+function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function icon(k){return '<svg class="ico" viewBox="0 0 16 16" aria-hidden="true">'+ICON[k]+'</svg>'}
+function lsGet(k){try{return localStorage.getItem(k)}catch(e){return null}}
+function lsSet(k,v){try{localStorage.setItem(k,v)}catch(e){}}
+function pl(n,one,few,many){var a=n%10,b=n%100;return a===1&&b!==11?one:(a>=2&&a<=4&&(b<12||b>14)?few:many)}
+function countText(st,n){
+  if(st==='waiting')return n+' '+pl(n,'чекає тебе','чекають тебе','чекають тебе');
+  if(st==='idle')return n+' без роботи';
+  if(st==='working')return n+' '+pl(n,'працює','працюють','працюють');
+  if(st==='external')return n+' '+pl(n,'чекає команду','чекають команду','чекають команду');
+  return n+' '+pl(n,'мертва','мертві','мертвих');
+}
+function dur(ms){
+  var s=Math.floor(Math.max(0,ms)/1000);if(s<60)return s+' с';
+  var m=Math.floor(s/60);if(m<60)return m+' хв';
+  var h=Math.floor(m/60);if(h<24)return h+' год'+(m%60?' '+(m%60)+' хв':'');
+  var d=Math.floor(h/24);return d+' д'+(h%24?' '+(h%24)+' год':'');
+}
+function ago(ms){return ms<5000?'щойно':dur(ms)+' тому'}
+function clock(t,sec){var d=new Date(t);if(isNaN(d))return '—';return d.toLocaleTimeString('uk-UA',sec?{hour:'2-digit',minute:'2-digit',second:'2-digit'}:{hour:'2-digit',minute:'2-digit'})}
+function ts(x){var v=Date.parse(x);return isNaN(v)?Infinity:v}
+function level(st,ms){var t=ESCALATE[st];if(!t)return 0;var m=ms/60000;return m>=t[1]?2:(m>=t[0]?1:0)}
+
+/* ---------- mock data (preview only) ---------- */
+var T0=Date.now();
+function at(min){return new Date(T0-min*60000).toISOString()}
+var CWD='/Users/you/code/app-wt/';
+var MOCK=[
+  {id:'8f3a2c91d4',name:'telegram',branch:'feat/telegram-targets',cwd:CWD+'telegram',state:'waiting',since:at(17),last_event_at:at(.2),
+   headline:'Permission needed: git push origin feat/telegram-targets',tool:'Bash',task:'wp-telegram-targets-3',report:null,
+   last_message:"Target selection is wired into the campaign flow. Users can pick up to 5 channels per campaign; the choice is saved to campaign_targets and checked against the bot's admin rights in each channel.\n\nChanges:\n- apps/bot/src/flows/targets.ts, new step after budget\n- packages/db/migrations/0042_campaign_targets.sql\n- 31 tests in apps/bot, all green\n\nTo let CI run the integration suite I need to push the branch. Approve `git push origin feat/telegram-targets`?",
+   prompt:'Додай у телеграм-бот вибір цільових каналів: до 5 на кампанію, збереження в БД, перевірка прав бота, тести.',pr_url:null},
+  {id:'b71e09aa3c',name:'m5-execution',branch:'feat/m5-order-execution',cwd:CWD+'m5-execution',state:'waiting',since:at(3.4),last_event_at:at(3.4),
+   headline:'Task blocked: needs BINANCE_TESTNET_KEY for integration tests',tool:null,task:'wp-m5-execution-2',
+   report:{id:'r-2291',status:'blocked',at:at(3.4),summary:"Execution adapter and retries are done. Integration tests need BINANCE_TESTNET_KEY in .env.local, I can't continue without it."},
+   last_message:"Order execution adapter is in place: idempotent client order ids, exponential retry on 429 and 5xx, and a reconciliation pass that compares local fills against the exchange every 30 s. Unit tests cover partial fills, duplicate acks and network timeouts (58 tests, green).\n\nThe integration suite talks to the Binance testnet and fails at setup because BINANCE_TESTNET_KEY and BINANCE_TESTNET_SECRET are missing from .env.local. I didn't want to mock the exchange here, since the point of M5 is to prove that real request signing works.\n\nOptions:\n1. You add the testnet keys to .env.local and I rerun the suite.\n2. I skip integration for now, open the PR as a draft and note the gap in the description.\n\nWhich do you prefer?",
+   prompt:'Реалізуй M5: виконання ордерів через адаптер біржі, ретраї, ідемпотентність, звірка з біржею. Інтеграційні тести на testnet.',pr_url:'https://github.com/acme/app/pull/412'},
+  {id:'3c55e8f210',name:'prefilter',branch:'feat/prefilter-v2',cwd:CWD+'prefilter',state:'idle',since:at(22),last_event_at:at(22),
+   headline:'Turn finished: thresholds tuned, 42 tests green',tool:null,task:'wp-prefilter-v2-1',
+   report:{id:'r-2284',status:'done',at:at(22.3),summary:'Prefilter v2 behind PREFILTER_V2. False positives 18% → 6% on fixtures, recall 94%. PR #409 open.'},
+   last_message:'Tuned the prefilter thresholds on the labelled fixture set (2,140 posts). False positives dropped from 18% to 6%, recall stayed at 94%. Everything is behind the PREFILTER_V2 flag, off by default. 42 tests green, PR is open. Nothing else in the task list, ready for the next one.',
+   prompt:'Підкрути пороги префільтра на розміченому наборі: менше хибних спрацювань без втрати recall.',pr_url:'https://github.com/acme/app/pull/409'},
+  {id:'c0ffee5a11',name:'schema-drift',branch:'feat/schema-drift',cwd:CWD+'schema-drift',state:'external',since:at(4.5),last_event_at:at(4.5),
+   headline:'Чекає: gh pr checks 223 --watch',tool:null,task:'wp-schema-drift-2',report:null,
+   last_message:'PR is open, waiting for CI before merging into dev.',prompt:null,pr_url:'https://github.com/acme/app/pull/223'},
+  {id:'d902b4c7e1',name:'advisor',branch:'feat/ai-advisor-memory',cwd:CWD+'advisor',state:'working',since:at(6.2),last_event_at:at(.05),
+   headline:'Running pnpm test --filter advisor',tool:'Bash',task:'wp-advisor-memory-4',report:null,
+   last_message:'Refactored the advisor memory store into a single repository with TTL eviction. Running the advisor suite now to make sure nothing regressed.',
+   prompt:"Перероби пам'ять AI-порадника: одне сховище, TTL, без дублювання контексту між сесіями.",pr_url:null},
+  {id:'61f0a3be95',name:'landing-uk',branch:'fix/landing-copy-uk',cwd:CWD+'landing-uk',state:'working',since:at(1.3),last_event_at:at(.03),
+   headline:'Editing src/pages/index.astro',tool:'Edit',task:null,report:null,
+   last_message:'Fixing the Ukrainian copy on the hero and pricing blocks: apostrophes, non-breaking spaces before units, and the CTA wording you sent.',
+   prompt:'Виправ український текст на лендінгу за списком правок у docs/copy-uk.md.',pr_url:null},
+  {id:'a4c8d2e6f7',name:'billing',branch:'feat/stripe-webhooks',cwd:CWD+'billing',state:'working',since:at(.63),last_event_at:at(.02),
+   headline:'Reading apps/api/src/billing/webhooks.ts',tool:'Read',task:'wp-billing-webhooks-1',report:null,
+   last_message:'Reading the current webhook handler before adding signature verification and idempotency keys.',
+   prompt:'Додай перевірку підпису Stripe та ідемпотентність у вебхуки білінгу.',pr_url:null},
+  {id:'e05b7c19d3',name:'search-index',branch:'chore/search-reindex',cwd:CWD+'search-index',state:'dead',since:at(72),last_event_at:at(72),
+   headline:'Process exited: code 137 (out of memory)',tool:null,task:'wp-search-reindex-1',
+   report:{id:'r-2270',status:'failed',at:at(72.5),summary:'Reindex crashed at 1.2M documents; batch size 50k is too large for the worker.'},
+   last_message:'Starting the full reindex with batch size 50,000…',
+   prompt:'Перебудуй пошуковий індекс з нуля і перевір, що старі документи не губляться.',pr_url:null}
+];
+function mockFor(sc){
+  var a=MOCK;
+  if(sc==='idle')a=MOCK.filter(function(s){return s.state!=='waiting'});
+  else if(sc==='calm')a=MOCK.filter(function(s){return s.state==='working'});
+  else if(sc==='empty')a=[];
+  return {now:new Date().toISOString(),sessions:a};
+}
+
+/* ---------- state ---------- */
+var params=new URLSearchParams(location.search);
+var mockParam=params.get('mock');
+var S={
+  mode:mockParam!==null?'mock':'live', // 'mock' = built-in data
+  auto:false,                          // mock because the API isn't there (preview)
+  scen:SCEN[mockParam]?mockParam:'all',
+  sessions:null,skew:0,lastOk:0,fails:0,
+  everOk:lsGet(LS_OK)==='1',
+  offline:false,sig:null,open:null,opener:null,shSig:'',parts:{}
+};
+function serverNow(){return Date.now()+S.skew}
+function norm(list){
+  return (list||[]).filter(function(s){return s&&s.id!=null}).map(function(s){
+    var o={};for(var k in s)o[k]=s[k];if(RANK[o.state]==null)o.state='working';return o;
+  }).sort(function(a,b){return RANK[a.state]-RANK[b.state]||(ts(a.since)-ts(b.since))||String(a.name).localeCompare(String(b.name))});
+}
+function ingest(d){
+  var t=Date.parse(d.now);S.skew=isNaN(t)?0:t-Date.now();
+  S.sessions=norm(d.sessions);S.lastOk=Date.now();S.fails=0;render();
+}
+function isOffline(){
+  if(S.mode==='mock')return S.scen==='offline';
+  if(S.sessions===null)return S.fails>0;
+  return S.fails>=2||Date.now()-S.lastOk>OFFLINE_MS;
+}
+function applyMock(){if(S.scen==='offline')render();else ingest(mockFor(S.scen))}
+function setScen(k){
+  S.scen=k;
+  if(k==='offline'){S.sessions=norm(MOCK);S.skew=0;S.lastOk=Date.now()-40000}
+  applyMock();
+}
+
+/* ---------- polling ---------- */
+var pollTimer=null,inflight=false;
+async function poll(){
+  clearTimeout(pollTimer);
+  if(inflight)return;
+  if(S.mode==='mock'&&!S.auto){applyMock();pollTimer=setTimeout(poll,POLL_MS);return}
+  inflight=true;
+  try{
+    var ctl=new AbortController(),to=setTimeout(function(){ctl.abort()},5000);
+    var r=await fetch(API,{credentials:'same-origin',cache:'no-store',headers:{Accept:'application/json'},signal:ctl.signal});
+    clearTimeout(to);
+    if(!r.ok)throw new Error('HTTP '+r.status);
+    var d=await r.json();
+    if(!d||!Array.isArray(d.sessions))throw new Error('bad payload');
+    S.mode='live';S.auto=false;S.everOk=true;lsSet(LS_OK,'1');
+    ingest(d);
+  }catch(e){
+    if(S.auto)applyMock();
+    else if(!S.everOk&&S.sessions===null){S.mode='mock';S.auto=true;setScen(S.scen)}
+    else{S.fails++;render()}
+  }finally{inflight=false}
+  pollTimer=setTimeout(poll,POLL_MS);
+}
+
+/* ---------- render ---------- */
+function setPart(id,html){if(S.parts[id]!==html){S.parts[id]=html;$(id).innerHTML=html}}
+function render(){
+  var off=isOffline();S.offline=off;
+  var list=S.sessions||[];
+  var c={waiting:0,idle:0,working:0,dead:0};list.forEach(function(s){c[s.state]++});
+  var w=ORDER.filter(function(k){return c[k]})[0];
+  var tone,ic,head,items=[],sub='';
+  if(off){
+    tone='offline';ic='offline';head="Немає зв'язку";
+    sub=S.lastOk?'останнє оновлення <span data-agoc="'+S.lastOk+'">'+ago(Date.now()-S.lastOk)+'</span>':'даних ще не було';
+  }else if(S.sessions===null){tone='neutral';ic='empty';head='Підключення…'}
+  else if(!list.length){tone='neutral';ic='empty';head='Немає сесій';sub='Жоден агент не запущений'}
+  else if(!c.waiting&&!c.idle&&!c.dead){tone='working';ic='working';head='Всі працюють';items=c.external?[['working',countText('working',c.working)],['external',countText('external',c.external)]].filter(function(it){return c[it[0]]}):[[null,c.working+' '+pl(c.working,'сесія','сесії','сесій')]]}
+  else{
+    tone=w==='dead'?'neutral':(w==='external'?'working':w);ic=w;head=countText(w,c[w]);
+    items=ORDER.filter(function(k){return k!==w&&c[k]}).map(function(k){return[k,countText(k,c[k])]});
+  }
+  document.documentElement.dataset.tone=tone;
+  setPart('#hl','<span class="hl-i'+(tone==='waiting'?' pulse':'')+'">'+icon(ic)+'</span><span>'+esc(head)+'</span>');
+  setPart('#counts',items.map(function(it){return '<span>'+(it[0]?icon(it[0]):'')+esc(it[1])+'</span>'}).join(''));
+  setPart('#sub',sub);
+  $('#upd').textContent=S.lastOk?'оновлено '+clock(S.lastOk,true):'ще не оновлено';
+  $('#dmark').hidden=S.mode!=='mock';
+
+  var sig=JSON.stringify(list)+'|'+off+'|'+(S.sessions===null);
+  if(sig!==S.sig){S.sig=sig;renderList(list,off)}
+  renderDemo();
+  document.title=(!off&&c.waiting?'('+c.waiting+') ':'')+'Агенти';
+  setChrome(tone);
+  if(S.open)updateSheet(false);
+}
+function renderList(list,off){
+  $('#notice').innerHTML=off&&list.length?'<div class="notice"><span class="cap">Останній відомий стан</span><span class="mono">'+clock(S.lastOk,true)+'</span></div>':'';
+  var prev=null;
+  $('#list').innerHTML=list.map(function(s){
+    var g=prev!==null&&prev!==s.state;prev=s.state;
+    return '<li'+(g?' class="grp"':'')+'>'+card(s)+'</li>';
+  }).join('');
+  $('#empty').innerHTML=S.sessions&&!list.length&&!off?'<div class="empty"><div class="cap">Порожньо</div><p>Сесії Claude Code з’являться тут, щойно агент запуститься.</p></div>':'';
+  tick();
+}
+function chip(st){return '<span class="chip" data-state="'+st+'">'+icon(st)+'<span>'+LABEL[st]+'</span></span>'}
+function timer(s){return '<span class="tm" data-state="'+s.state+'" data-since="'+esc(s.since)+'"></span>'}
+function card(s){
+  return '<button class="card" type="button" data-id="'+esc(s.id)+'" data-state="'+s.state+'">'+
+    '<span class="st">'+chip(s.state)+'</span>'+
+    '<span class="nm">'+esc(s.name||'без назви')+'</span>'+timer(s)+
+    (s.branch?'<span class="br">'+esc(s.branch)+'</span>':'')+
+    '<span class="hd">'+(s.headline?esc(s.headline):'<span class="nil">без опису</span>')+'</span>'+
+  '</button>';
+}
+function renderDemo(){
+  var html='';
+  if(S.mode==='mock'){
+    html='<div class="demo"><div class="cap">Демо-дані</div>'+
+      (S.auto?'<p class="demo-note">Сервер не відповідає, тому показано приклад. З робочим сервером цього блоку немає.</p>':'')+
+      '<div class="tags">'+Object.keys(SCEN).map(function(k){return '<button type="button" class="tag'+(k===S.scen?' on':'')+'" data-scen="'+k+'" aria-pressed="'+(k===S.scen)+'">'+SCEN[k]+'</button>'}).join('')+'</div></div>';
+  }
+  setPart('#demo',html);
+}
+var lastChrome='';
+function setChrome(tone){
+  var bg=getComputedStyle($('#band')).backgroundColor,key=tone+bg;
+  if(key===lastChrome)return;lastChrome=key;
+  var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute('content',bg);
+  $('#fav').href='data:image/svg+xml,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" fill="#121110"/><rect x="8" y="8" width="16" height="16" fill="'+FAV[tone]+'"/></svg>');
+}
+
+/* ---------- live timers ---------- */
+function tick(){
+  var now=serverNow();
+  document.querySelectorAll('[data-since]').forEach(function(el){
+    var t=Date.parse(el.dataset.since);
+    if(isNaN(t)){el.textContent='—';return}
+    var ms=Math.max(0,now-t),txt=dur(ms),lv=level(el.dataset.state,ms),cls='tm'+(lv?' l'+lv:'');
+    if(el.textContent!==txt)el.textContent=txt;
+    if(el.className!==cls)el.className=cls;
+  });
+  document.querySelectorAll('[data-ago]').forEach(function(el){var t=Date.parse(el.dataset.ago);el.textContent=isNaN(t)?'—':ago(Math.max(0,now-t))});
+  document.querySelectorAll('[data-agoc]').forEach(function(el){el.textContent=ago(Date.now()-(+el.dataset.agoc))});
+  if(isOffline()!==S.offline)render();
+}
+
+/* ---------- bottom sheet ---------- */
+var sheet=$('#sheet'),scrim=$('#scrim'),shBody=$('#shBody'),shFoot=$('#shFoot'),main=$('#main');
+function find(id){return (S.sessions||[]).filter(function(x){return String(x.id)===String(id)})[0]}
+function prop(label,val,stack){return '<div class="prow'+(stack?' stack':'')+'"><dt>'+label+'</dt><dd>'+(val==null||val===''?'<span class="nil">немає</span>':val)+'</dd></div>'}
+function clip(t){t=String(t);return t.length>MSG_MAX?t.slice(0,MSG_MAX).replace(/\s+\S*$/,'')+'…':t}
+function sheetHTML(s){
+  var rep=s.report;
+  var repHTML=rep?'<div class="rep">'+(function(){var r=REPORT[rep.status]||[rep.status||'—',''];return '<span class="rchip '+r[1]+'">'+esc(r[0])+'</span>'})()+(rep.at?'<span class="mono">'+clock(rep.at,false)+'</span>':'')+'</div>'+(rep.summary?'<p class="rep-sum">'+esc(rep.summary)+'</p>':''):'<p class="nil" style="margin:0">Звіту немає</p>';
+  return '<div class="sh-top">'+chip(s.state)+timer(s)+'</div>'+
+    '<h2 class="sh-name" id="shName">'+esc(s.name||'без назви')+'</h2>'+
+    (s.branch?'<div class="sh-br">'+esc(s.branch)+'</div>':'')+
+    '<p class="sh-hd">'+(s.headline?esc(s.headline):'<span class="nil">без опису</span>')+'</p>'+
+    '<dl class="props">'+
+      prop('Стан з',s.since?esc(clock(s.since,true)):null)+
+      prop('Інструмент',s.tool?esc(s.tool):null)+
+      prop('Задача',s.task?esc(s.task):null)+
+      prop('Остання подія',s.last_event_at?'<span data-ago="'+esc(s.last_event_at)+'"></span>':null)+
+      prop('Папка',s.cwd?esc(s.cwd):null,true)+
+    '</dl>'+
+    '<section class="sec"><h3 class="cap">Останній звіт</h3>'+repHTML+'</section>'+
+    '<section class="sec"><h3 class="cap">Остання відповідь</h3>'+(s.last_message?'<div class="well">'+esc(clip(s.last_message))+'</div>':'<p class="nil" style="margin:0">немає</p>')+'</section>'+
+    '<section class="sec"><h3 class="cap">Останній промпт</h3>'+(s.prompt?'<div class="well short">'+esc(clip(s.prompt))+'</div>':'<p class="nil" style="margin:0">немає</p>')+'</section>'+
+    '<div class="sh-id">ID '+esc(s.id)+'</div>';
+}
+function updateSheet(force){
+  var s=find(S.open);if(!s)return;
+  var sig=JSON.stringify(s);if(!force&&sig===S.shSig)return;S.shSig=sig;
+  var top=shBody.scrollTop,wells=[].map.call(shBody.querySelectorAll('.well'),function(w){return w.scrollTop});
+  shBody.innerHTML=sheetHTML(s);
+  if(force)shBody.scrollTop=0;else{shBody.scrollTop=top;shBody.querySelectorAll('.well').forEach(function(w,i){w.scrollTop=wells[i]||0})}
+  var ok=s.pr_url&&/^https?:\/\//i.test(s.pr_url);
+  shFoot.hidden=!ok;sheet.classList.toggle('nofoot',!ok);
+  shFoot.innerHTML=ok?'<a class="pr" href="'+esc(s.pr_url)+'" target="_blank" rel="noopener">Відкрити PR <span aria-hidden="true">↗</span></a>':'';
+  tick();
+}
+function openSheet(id){
+  S.open=id;S.opener=id;updateSheet(true);
+  document.body.classList.add('lock');main.inert=true;
+  sheet.style.transform='';
+  requestAnimationFrame(function(){scrim.classList.add('on');sheet.classList.add('on')});
+  setTimeout(function(){$('#close').focus({preventScroll:true})},60);
+}
+function closeSheet(){
+  if(!S.open)return;S.open=null;
+  scrim.classList.remove('on');sheet.classList.remove('on');sheet.style.transform='';
+  document.body.classList.remove('lock');main.inert=false;
+  var b=[].filter.call(document.querySelectorAll('.card'),function(el){return el.dataset.id===String(S.opener)})[0];
+  if(b)b.focus({preventScroll:true});
+}
+var drag=null,grip=$('#grip');
+grip.addEventListener('pointerdown',function(e){if(e.target.closest('button'))return;drag={y:e.clientY,dy:0};sheet.style.transition='none';try{grip.setPointerCapture(e.pointerId)}catch(_){}});
+grip.addEventListener('pointermove',function(e){if(!drag)return;drag.dy=Math.max(0,e.clientY-drag.y);sheet.style.transform='translateY('+drag.dy+'px)'});
+function endDrag(){if(!drag)return;var dy=drag.dy;drag=null;sheet.style.transition='';if(dy>90)closeSheet();else sheet.style.transform=''}
+grip.addEventListener('pointerup',endDrag);grip.addEventListener('pointercancel',endDrag);
+scrim.addEventListener('click',closeSheet);
+$('#close').addEventListener('click',closeSheet);
+document.addEventListener('keydown',function(e){if(e.key==='Escape')closeSheet()});
+document.addEventListener('click',function(e){
+  var c=e.target.closest('.card');if(c){openSheet(c.dataset.id);return}
+  var t=e.target.closest('[data-scen]');if(t)setScen(t.dataset.scen);
+});
+
+/* ---------- keep screen on ---------- */
+// Screen Wake Lock only exists in secure contexts (HTTPS). The board is served over plain HTTP on
+// the LAN, so fall back to a muted, looping, inline video: iOS keeps the screen on while it plays.
+var wakeBtn=$('#wake'),wake={want:lsGet(LS_WAKE)==='1',lock:null,vid:null,vidOn:false};
+var NATIVE_WAKE=window.isSecureContext&&('wakeLock' in navigator);
+function wakeUI(){var on=!!wake.lock||wake.vidOn;wakeBtn.setAttribute('aria-checked',String(on));wakeBtn.classList.toggle('on',on)}
+function videoOn(){
+  if(!wake.vid){
+    var v=document.createElement('video');
+    v.muted=true;v.loop=true;v.setAttribute('muted','');v.setAttribute('playsinline','');v.setAttribute('aria-hidden','true');
+    var MP4='data:video/mp4;base64,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',WEBM='data:video/webm;base64,GkXfo59ChoEBQveBAULygQRC84EIQoKEd2VibUKHgQJChYECGFOAZwEAAAAAAAOYEU2bdLpNu4tTq4QVSalmU6yBoU27i1OrhBZUrmtTrIHYTbuMU6uEElTDZ1OsggEeTbuMU6uEHFO7a1OsggOC7AEAAAAAAABZAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAVSalmsirXsYMPQkBNgI1MYXZmNjAuMTYuMTAwV0GNTGF2ZjYwLjE2LjEwMESJiECfQAAAAAAAFlSua8GuAQAAAAAAADjXgQFzxYjq36UmY/b2KpyBACK1nIN1bmSIgQCGhVZfVlA4g4EBI+ODhAX14QDgibCBELqBEJqBAhJUw2f8c3OgY8CAZ8iaRaOHRU5DT0RFUkSHjUxhdmY2MC4xNi4xMDBzc9ZjwItjxYjq36UmY/b2KmfIoUWjh0VOQ09ERVJEh5RMYXZjNjAuMzEuMTAyIGxpYnZweGfIoUWjiERVUkFUSU9ORIeTMDA6MDA6MDIuMDAwMDAwMDAwAB9DtnVB3eeBAKOjgQAAgBACAJ0BKhAAEAAARwiFhYiFhIgCAgAMDWAA/v+rUICjlYEAZACxAQAFEKwAGAAYWC/0AAgAAKOVgQDIALEBAAUQrAAYABhYL/QACAAAo5WBASwAsQEABRCsABgAGFgv9AAIAACjlYEBkACxAQAFEKwAGAAYWC/0AAgAAKOVgQH0ALEBAAUQrAAYABhYL/QACAAAo5WBAlgAsQEABRCsABgAGFgv9AAIAACjlYECvACxAQAFEBAUYABhYL/QACAAAKOVgQMgALEBAAUQrAAYABhYL/QACAAAo5WBA4QAsQEABRCsABgAGFgv9AAIAACjlYED6ACxAQAFEKwAGAAYWC/0AAgAAKOVgQRMALEBAAUQrAAYABhYL/QACAAAo5WBBLAAsQEABRCsABgAGFgv9AAIAACjlYEFFACxAQAFEKwAGAAYWC/0AAgAAKOVgQV4ALEBAAUQrAAYABhYL/QACAAAo5WBBdwAsQEABRCsABgAGFgv9AAIAACjlYEGQACxAQAFEKwAGAAYWC/0AAgAAKOVgQakALEBAAUQrAAYABhYL/QACAAAo5WBBwgAsQEABRAQFGAAYWC/0AAgAACjlYEHbACxAQAFEKwAGAAYWC/0AAgAABxTu2uRu4+zgQC3iveBAfGCAZ/wgQM=';
+    v.src=v.canPlayType('video/mp4')?MP4:WEBM; // inline: iOS won't play media from a server without Range support
+    v.style.cssText='position:fixed;left:0;bottom:0;width:1px;height:1px;opacity:0;pointer-events:none';
+    v.addEventListener('pause',function(){wake.vidOn=false;wakeUI()});
+    v.addEventListener('playing',function(){wake.vidOn=true;wakeUI()});
+    document.body.appendChild(v);wake.vid=v;
+  }
+  // Called synchronously from the tap handler so iOS treats it as user-initiated.
+  var p=wake.vid.play();
+  if(p&&p.catch)p.catch(function(){wake.vidOn=false;wake.want=false;lsSet(LS_WAKE,'0');wakeUI()});
+}
+async function wakeOn(){
+  if(!NATIVE_WAKE){videoOn();return}
+  try{
+    wake.lock=await navigator.wakeLock.request('screen');
+    wake.lock.addEventListener('release',function(){wake.lock=null;wakeUI()});
+  }catch(e){wake.lock=null;videoOn()}
+  wakeUI();
+}
+function wakeOff(){
+  wake.want=false;
+  if(wake.lock){var l=wake.lock;wake.lock=null;try{l.release()}catch(e){}}
+  if(wake.vid){wake.vid.pause();wake.vidOn=false}
+  wakeUI();
+}
+wakeBtn.addEventListener('click',function(){
+  if(wake.lock||wake.vidOn)wakeOff();
+  else{wake.want=true;wakeOn()}
+  lsSet(LS_WAKE,wake.want?'1':'0');
+});
+document.addEventListener('visibilitychange',function(){
+  if(document.visibilityState!=='visible')return;
+  if(wake.want&&!wake.lock&&!wake.vidOn)wakeOn();
+  poll();
+});
+
+/* ---------- start ---------- */
+if(wake.want)wakeOn();
+render();
+if(S.mode==='mock')setScen(S.scen);
+poll();
+setInterval(tick,1000);
+})();
+</script>
+</body>
+</html>

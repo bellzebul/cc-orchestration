@@ -1,0 +1,9 @@
+{
+  "name": "cowork-bridge",
+  "private": true,
+  "type": "module",
+  "version": "0.1.0",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.20.0"
+  }
+}

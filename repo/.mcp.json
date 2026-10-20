@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "cowork-bridge": {
+      "command": "node",
+      "args": [".claude/bridge/server.mjs"]
+    }
+  }
+}
