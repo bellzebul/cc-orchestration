@@ -681,3 +681,6 @@
 {"cmd": "pnpm remove left-pad", "expect": "block", "why": "kit-pnpm-remove"}
 {"cmd": "npm install left-pad", "expect": "pass", "why": "kit-npm-install-named"}
 {"cmd": "npm install left-pad@latest", "expect": "block", "why": "kit-npm-install-latest"}
+{"cmd": "touch .claude/bridge/retire/w1", "expect": "block", "why": "kit-retire-touch"}
+{"cmd": "echo x > .claude/bridge/retire/w1", "expect": "block", "why": "kit-retire-redirect"}
+{"cmd": "ls .claude/bridge/retire-log", "expect": "pass", "why": "kit-retire-log-read"}

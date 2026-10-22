@@ -28,6 +28,7 @@ after usage limits reset.
 |---|---|
 | `install.sh` | Installs/updates the setup into one repo. It writes `.claude/orchestration.conf` (branches, stack, commands, policy) on the first run, then renders the files below into the repo. |
 | `repo/` | The per-repo kit: the cowork-bridge channel server (`.claude/bridge`), hooks (bash guard, lint, reply guard), 6 agents, the `work-package` SOP skill, the worker scripts (`worker.sh`, `worker-up.sh`, `worker-spawner.sh`, branch-trust), the sealed pre-push hook, and the `guard-selftest.sh` smoke test. |
+| `scripts/worker-retire.sh` (in `repo/`) | Retires a finished worker (merged, clean, no open task): closes its tmux session, removes the worktree, deletes the branch. Cowork requests it, or the spawner's sweep does it after `RETIRE_AFTER_H`. |
 | `mac/setup.sh` | One-time machine setup. It checks the tools, writes the global `~/.claude` defaults and installs the tracker hooks. |
 | `mac/launchd/install.sh` | Login agents: the tracker server plus one worker spawner per repo. They always run and restart themselves. |
 | `mac/tracker/` | The agent tracker: a phone board, plus ntfy pushes for anything that needs you. |

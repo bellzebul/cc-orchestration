@@ -53,6 +53,14 @@ once to run `mac/launchd/install.sh --spawner <repo>` from the cc-orchestration 
 Ping a new worker before the first task: drop `ping-<hhmmss>.md` (the bridge delivers only `*.md`) asking for PONG + branch + pwd +
 `git config --get core.hooksPath`.
 
+**Retire a finished worker** (keeps the tracker and `<wt-root>` clean): once its reply is `done`, the PR
+is merged and you plan no follow-up `-rN`, write `<main>/.claude/bridge/retire/.<name>.tmp` → `mv` to
+`retire/<name>`. The spawner closes its tmux session, removes the worktree and deletes the merged branch —
+only if the branch is in origin/BASE, the worktree is clean and no task is open; otherwise
+`retire-log/<name>.refused` says why and nothing is touched. Workers you forget are retired automatically
+RETIRE_AFTER_H hours (default 24) after their last `done`, under the same conditions. Never retire a
+worker you still want to send `-rN` to — it loses its context.
+
 **Drop a task (atomic):** write `<worktree>/.claude/bridge/.<id>.tmp`, then `mv` to `inbox/<id>.md`.
 A rejected or timed-out tool call may still have dropped the file — check `processed/` before re-dropping.
 

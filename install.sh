@@ -105,6 +105,7 @@ MIGRATIONS=$mig
 WORKER_USD=10              # paid API spend a worker decides alone (per task, within budget_usd)
 HUMAN_USD=50               # at or above this the human decides; in between the orchestrator does
 ENV_FILES=.env .env.test   # copied from the main checkout into every worker worktree
+RETIRE_AFTER_H=24          # a finished (done + merged + clean) worker is retired after this many idle hours; 0 = only on request
 EOF
   echo "Wrote $conf:"; echo; sed 's/^/    /' "$conf"; echo
   [ "$test" != none ] || echo "!! TEST_CMD is none: set the command CI gates on, or workers have no test gate." >&2

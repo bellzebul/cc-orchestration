@@ -13,6 +13,7 @@
 ## The file protocol (`.claude/bridge/`, per worktree, gitignored)
 - `spawn/<name>` (main checkout only): a request to start a worker. The first line is an optional branch. It is written atomically (`.<name>.tmp`, then `mv`).
 - `spawn-log/<name>.starting|up|failed`: the spawner's result. A `failed` file carries the last screen or the refusal reason.
+- `retire/<name>` (main checkout only): a request to retire a finished worker. `scripts/worker-retire.sh` closes its tmux session, removes the worktree and deletes the branch, and only when the branch is merged into `origin/BASE`, the worktree is clean and no task is open. The result goes to `retire-log/<name>.done|refused`. The spawner also sweeps every 30 min and retires workers whose last reply is `done` and older than `RETIRE_AFTER_H`.
 - `inbox/<id>.md`: a task (frontmatter `id, branch, base, goal, budget_usd, approved_deps, merge, timeout_min` plus sections).
 - `processed/<ts>-<id>.md`: the server claims a task here before delivering it, so a crash never delivers twice.
 - `outbox/<id>.md`: the worker's single reply via the `bridge_reply` tool: `status`, plus `needs`/`action` when blocked.

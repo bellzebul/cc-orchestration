@@ -21,3 +21,4 @@ mkdir -p src/tests/unit; cp "$kit"/tests/reference/*.py src/tests/unit/
 cp "$kit/tests/guard_battery.jsonl" scripts/; : > scripts/guard_relaxations.jsonl
 git add -A; git commit -qm render; GIT_PUSH_TO_PROTECTED=1 git push -q origin dev 2>/dev/null
 python3 -m pytest -q -p no:cacheprovider -o addopts= -m "" src/tests/unit "$@"
+bash "$kit/tests/test-retire.sh"
